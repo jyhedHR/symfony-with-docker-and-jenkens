@@ -25,7 +25,7 @@ pipeline {
             steps {
                 // Assuming your Symfony app runs on port 80 in the container
                 // You might need to adjust this URL based on your setup
-                sh 'curl -I http://localhost:80'
+                sh 'curl -I http://localhost:8081'
             }
         }
         stage('Stop Docker Containers') {
