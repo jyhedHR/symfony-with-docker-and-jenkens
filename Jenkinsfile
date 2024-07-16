@@ -8,8 +8,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Check out the code from the repository
-                git 'https://github.com/jyhedHR/abshore.git'
+                // Check out the code from the 'test1' branch of the repository
+                git branch: 'test1', url: 'https://github.com/jyhedHR/abshore.git'
             }
         }
         stage('Start Docker Containers') {
