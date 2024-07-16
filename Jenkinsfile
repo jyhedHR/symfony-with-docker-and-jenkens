@@ -16,11 +16,12 @@ pipeline {
     steps {
         script {
             // Start the Docker containers in detached mode
-            sh "docker-compose up --build"
+            sh "docker-compose up --build "
 
             // Wait for containers to be fully up (adjust the sleep time as needed)
             sh 'timeout 30' // Replace 'sleep 30' with 'timeout 30' on Windows
         }
+    }}
         stage('Open Main Page') {
             steps {
                 // Assuming your Symfony app runs on port 80 in the container
