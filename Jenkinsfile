@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        COMPOSER_CACHE_DIR = "${WORKSPACE}/.composer"
-        DOCKER_COMPOSE_FILE = '../docker-compose.yml'
+        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
     }
 
     stages {
@@ -13,41 +12,26 @@ pipeline {
                 git 'https://github.com/jyhedHR/abshore.git'
             }
         }
-        stage('Build Docker Containers') {
-            steps {
-                // Build the Docker containers
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} build'
-            }
-        }
         stage('Start Docker Containers') {
             steps {
-                // Start the Docker containers
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'
+                // Start the Docker containers in detached mode
+                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
+
+                // Wait for containers to be fully up (adjust the sleep time as needed)
+                sh 'sleep 30'
             }
         }
-        stage('Install Dependencies') {
+        stage('Open Main Page') {
             steps {
-                // Install PHP dependencies using Composer inside the PHP container
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service composer install'
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                // Run PHPUnit tests inside the PHP container
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/phpunit'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                // Deploy your application (this is an example)
-                sh 'echo "Deploying application..."'
-                // Add your deployment commands here
+                // Assuming your Symfony app runs on port 80 in the container
+                // You might need to adjust this URL based on your setup
+                sh 'curl -I http://localhost:80'
             }
         }
         stage('Stop Docker Containers') {
             steps {
                 // Stop and remove the Docker containers
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} down'
+                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
             }
         }
     }
