@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+        SYMFONY_ENV = 'prod' // Adjust as per your Symfony environment (dev, prod, etc.)
     }
 
     stages {
@@ -13,14 +14,32 @@ pipeline {
             }
         }
 
-        stage('Start Docker Containers') {
+        stage('Build and Start Docker Containers') {
             steps {
                 script {
-                    // Start the Docker containers in detached mode
-                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
-
+                    // Start the Docker containers in detached mode using 'docker-compose up'
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
+                    
                     // Wait for containers to be fully up (adjust the sleep time as needed)
-                    sh 'sleep 30' // Adjust time according to your application's startup time
+                    bat 'timeout /t 30 >nul'
+                }
+            }
+        }
+
+        stage('Run Symfony Commands') {
+            steps {
+                script {
+                    // Install dependencies (assuming using Composer)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php composer install --no-interaction --optimize-autoloader"
+
+                    // Clear Symfony cache
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
+
+                    // Warm up Symfony cache (optional)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:warmup --env=${SYMFONY_ENV}"
+
+                    // Run Symfony migrations (if using Doctrine)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
                 }
             }
         }
@@ -29,14 +48,14 @@ pipeline {
             steps {
                 // Assuming your Symfony app runs on port 80 in the container
                 // You might need to adjust this URL based on your setup
-                sh 'curl -I http://localhost:8081'
+                bat 'curl -I http://localhost:8081'
             }
         }
 
         stage('Stop Docker Containers') {
             steps {
                 // Stop and remove the Docker containers
-                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
+                bat "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
             }
         }
     }
