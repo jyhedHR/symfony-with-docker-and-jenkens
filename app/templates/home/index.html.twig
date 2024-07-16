@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+
+<div>
+<div>
+<span> Welcome to my app </span>
+  
+</div>
+<div>
+<ul class="nav">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="{{path('app_login')}}">Log In</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{path("signUp")}}">Create Account</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Authorized Page</a>
+  </li>
+  
+</ul>
+</div>
+</div>
+{% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+{% block title %}registro{% endblock %}
+{% block body %}
+<div>
+<form action="{{path('registro')}}" method="POST" >
+<div class="form-group" >
+  <input class="form-control" type="text" id="username" name="username"/>
+</div>
+<div class="form-group" >
+  <input class="form-control" type="password" id="password" name="password"/>
+</div>
+
+<input
+ type="submit"
+ class="btn btn-lg btn-primary"
+ value="Create Account"
+ onClick="{{path("app_login")}}"
+/>
+
+</form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+# Ignore socket files
+*.sock
+
+# Ignore node_modules (if you're using Node.js)
+node_modules/
+
+# Ignore vendor (if you're using Composer)
+vendor/
+
+# Ignore environment files
+.env
+
+# Ignore log files
+*.log

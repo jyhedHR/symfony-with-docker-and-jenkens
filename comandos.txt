@@ -1,0 +1,137 @@
+Una vez tenemos toda la configuración realizada vamos a correr el comando
+$ docker-compose up -d --build 
+
+Esto lo que hará es construir la imagen con las instrucciones que le hemos dejado en el compose
+
+Para crear un proyecto de Symfony con composer y docker dentro del proyecto
+$ docker exec -it php74-container bash
+
+DEBEMOS ELIMINAR TODO lo que este dentro de la carpeta app ya que para que la imagen de symfony se
+instale en /app este ha de estar vacío
+
+
+POR ULTIMO EJECUTAMOS EL comando  "NO OLVIDEMOS EL ESPACIO . del final"
+composer create-project symfony/skeleton .
+
+
+EL SIGUIENTE PASO  es saber que meter dentro del .gitignore , vamos al navegador y pegamos esto...
+https://toptal.com/developers/gitignore
+en el buscador introducimos
+Symfony  PhpStorm PhpStorm+all
+Esto nos genera unas líneas de código que tenemos que copiar y pegar en el .gitignore
+
+DEPENDENCIAS BÁSICAS DE Symfony
+# composer require doctrine
+
+
+EN EL .env necesitamos descomentar la línea de mysql y comentar la de postgresql y configuramos la 
+línea de mysql de la siguiente manera:
+DATABASE_URL="mysql://root:secret@mysql8-service:3306/symfony-docker-compose?serverVersion=8"
+
+PARA NO TENER PROBLEMAS CON LOS PERMISOS vamos a cambiarlos con 
+sudo chmod 777 -R /path to folder
+
+
+
+
+PODEMOS SALIR DEl ejecutor de la consola con exit y ejecutar el proyecto de otra manera
+y acto seguido ejecutar
+$ docker-compose run --rm php74-service php bin/console doctrine:database:create
+
+este último comando creará una base de datos llamada symfony-docker-compose ya que este es el nombre
+que le dimos en el .env a mysql
+
+
+AHORA podemos correr la base de datos de mysql con
+docker exec -it mysql8-container bash
+
+LAS credenciales serán las que le dimos en el .env a mysql
+mysql -uroot -psecret
+
+si hacemos un show databases veremos que tenemos la base de datos
+symfony-docker-compose
+
+AHORA VAMOS A DBEAVER y le damos a database , newconnection , configuramos la conexion port=4306
+root , secret
+
+Vamos a realizar una entidad para los usuarios que vamos a autenticar
+este comando sirve para ver todos los nombres de las rutas en nuestros controladores
+bin/console debug:router
+
+LO PRIMERO DE TODO ES INSTALAR NUESTRAS DEPENDENCIAS QUE APARECERAN EN EL .JSON
+composer require validator
+composer require annotations
+composer require security
+composer require twig
+composer require maker
+
+Vamos a realizar un
+bin/console make:user
+
+esto anterior lo que hace es iniciar la configuración de una tabla en nuestra base de datos
+
+
+PREGUNTAS 
+Como quieres que se llame esta clase "tabla" ? por defecto lo llama "user" si damos intro avanzamos
+
+Quieres guardar los datos en la base de datos a través de doctrine? por defecto yes "intro"
+
+Nos pregunta el nombre de los campos de la tabla , nos dá unos ejemplos y un valor e-mail por defecto
+le podemos decir username para ser más descriptivos
+
+Por último nos pregunta si queremos que este usuario se autentique con su contraseña
+
+Si queremos darle más campos a la tabla de user que acabamos de realizar, de nuevo le decimos
+bin/console make:entity
+
+nos dirá cual es el nombre de la tabla que queremos modificar o crear una nueva
+user
+
+nos dirá cual es el campo que queremos crear 
+nombre
+
+nos pregunta si es un string
+yes
+
+cuantos caracteres ? por defecto 255
+
+y si este puede ser null por defecto no
+
+POR ULTIMO PARA MIGRAR ESTA TABLA A LA BASE DE datos
+bin/console make:migration
+
+Una vez definida la migración le decimos
+bin/console doctrine:migrations:migrate
+
+Para migrar la tabla y ya tendremos user en la base de datos de mysql
+
+Si usuamos el comando , podremos ver todos los comandos con bin
+bin/console
+
+Para crear el autenticador corremos el comando
+bin/console make:auth
+
+Me pregunta si queremos empty o por el contrario queremos seguir Login form authenticator
+Le decimos la opción 1 que es la de Login form authenticator
+
+Entonces generamos otra TABLA "más preguntas"
+nombre de la tabla "clase" de autenticador le damos LoginAuthenticator por ejemplo
+
+Me pregunta por el nombre del controlador que va a crear y me da uno por defecto
+
+Me dice quires generar la ruta url para el Logout YES
+
+Puede darte un warning
+Deprecated: Function ReflectionType::__toString() is deprecated
+te dice que esta función está desfasada en esta versión
+
+TAMBIÉN PODEMOS crear un formulario de registro con bin/console make:controller Register
+
+Modificamos el SecurityController.php añadiéndole una public function para crear un nuevo usuario
+con su ruta especifica , si esta ruta se la damos al navegador este usuario se habrá creado , si lo 
+buscamos en la base de datos con SELECT * FROM user ;
+veremos al usuario Christian con su clave encriptada
+
+Vamos a crear una plantilla twig para los autorizados y vamos a config/packages/security.yaml
+y vamos a descomentar el Rol de administrador en la penúltima línea y creamos una plantilla para
+administradores con su correspondiente controlador

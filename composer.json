@@ -1,0 +1,8 @@
+{
+    "require": {
+        "symfony/asset": "^7.1",
+        "symfony/orm-pack": "^2.4",
+        "doctrine/doctrine-bundle": "^2.12",
+        "symfony/form": "^7.1"
+    }
+}
