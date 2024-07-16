@@ -16,7 +16,7 @@ pipeline {
     steps {
         script {
             // Start the Docker containers in detached mode
-            sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
+            sh "docker-compose up --build"
 
             // Wait for containers to be fully up (adjust the sleep time as needed)
             sh 'timeout 30' // Replace 'sleep 30' with 'timeout 30' on Windows
