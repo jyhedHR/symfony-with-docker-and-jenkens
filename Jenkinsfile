@@ -13,13 +13,13 @@ pipeline {
             }
         }
         stage('Start Docker Containers') {
-            steps {
-                // Start the Docker containers in detached mode
-                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
+    steps {
+        script {
+            // Start the Docker containers in detached mode
+            sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
 
-                // Wait for containers to be fully up (adjust the sleep time as needed)
-                sh 'sleep 30'
-            }
+            // Wait for containers to be fully up (adjust the sleep time as needed)
+            sh 'timeout 30' // Replace 'sleep 30' with 'timeout 30' on Windows
         }
         stage('Open Main Page') {
             steps {
