@@ -20,12 +20,47 @@ pipeline {
                 script {
                     // Start the Docker containers in detached mode using 'docker-compose up'
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
-                  
+                    
+                   
                 }
             }
         }
 
-       
+        stage('Run Symfony Commands') {
+            steps {
+                script {
+                    // Install dependencies (assuming using Composer)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php composer install --no-interaction --optimize-autoloader"
+
+                    // Clear Symfony cache
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
+
+                    // Run Symfony migrations (if using Doctrine)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
+                }
+            }
+        }
+
+        stage('Compile and Display User List') {
+            steps {
+                script {
+                    // Run Symfony command to generate user list (adjust with your actual Symfony command)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console app:user:list"
+
+                    // Optionally, trigger Twig rendering or view the generated content
+                    // Example: bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console twig:render user/list.html.twig"
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Run Symfony tests (replace with your test command)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/phpunit"
+                }
+            }
+        }
 
         stage('Stop Docker Containers') {
             steps {
