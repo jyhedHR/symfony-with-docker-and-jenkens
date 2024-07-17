@@ -9,7 +9,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from the Git repository
                 git credentialsId: '12345', 
                     branch: 'test1', 
                     url: 'https://github.com/jyhedHR/abshore.git'
@@ -23,7 +22,7 @@ pipeline {
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
                     
                     // Wait for containers to be fully up (adjust the sleep time as needed)
-                    bat 'timeout /t 30 >nul'
+                    bat 'timeout /t 30'
                 }
             }
         }
