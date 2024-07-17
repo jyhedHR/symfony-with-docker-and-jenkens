@@ -21,8 +21,7 @@ pipeline {
                     // Start the Docker containers in detached mode using 'docker-compose up'
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
                     
-                    // Wait for containers to be fully up (adjust the sleep time as needed)
-                    bat 'timeout /t 30'
+                   
                 }
             }
         }
