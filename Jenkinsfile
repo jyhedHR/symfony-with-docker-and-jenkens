@@ -26,8 +26,8 @@ pipeline {
                     // List all running containers to capture their names
                     def containers = bat(script: 'docker ps --format "{{.Names}}"', returnStdout: true).trim().split('\n')
                     echo "Running containers: ${containers}"
-                    
-                    bat 'timeout /t 30'
+
+                   bat 'ping -n 31 127.0.0.1 > nul'
                 }
             }
         }
