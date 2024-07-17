@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                git credentialsId: '12345',
                 // Checkout code from a Git repository (replace with your repository URL)
                 git branch: 'test1', url: 'https://github.com/jyhedHR/abshore.git'
             }
