@@ -21,7 +21,8 @@ pipeline {
                     // Start the Docker containers in detached mode using 'docker-compose up'
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
                     
-                   
+                    // Wait for containers to be fully up (adjust the sleep time as needed)
+                    bat 'timeout /t 30'
                 }
             }
         }
@@ -29,13 +30,14 @@ pipeline {
         stage('Run Symfony Commands') {
             steps {
                 script {
-                  
+                    // Install dependencies (assuming using Composer)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-container composer install --no-interaction --optimize-autoloader"
 
                     // Clear Symfony cache
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php app/bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-container php app/bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
 
                     // Run Symfony migrations (if using Doctrine)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php app/bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-container php app/bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
                 }
             }
         }
@@ -44,10 +46,10 @@ pipeline {
             steps {
                 script {
                     // Run Symfony command to generate user list (adjust with your actual Symfony command)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php app/bin/console app:user:list"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-container php app/bin/console app:user:list"
 
                     // Optionally, trigger Twig rendering or view the generated content
-                    // Example: bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console twig:render user/list.html.twig"
+                    // Example: bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-container php bin/console twig:render user/list.html.twig"
                 }
             }
         }
@@ -56,7 +58,7 @@ pipeline {
             steps {
                 script {
                     // Run Symfony tests (replace with your test command)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php app/bin/phpunit"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-container php app/bin/phpunit"
                 }
             }
         }
