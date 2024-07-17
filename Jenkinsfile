@@ -34,13 +34,13 @@ pipeline {
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php composer install --no-interaction --optimize-autoloader"
 
                     // Clear Symfony cache
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php app/bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
 
                     // Optionally warm up Symfony cache
                     // bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:warmup --env=${SYMFONY_ENV}"
 
                     // Run Symfony migrations (if using Doctrine)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php app/bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
                 }
             }
         }
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     // Run Symfony tests (replace with your test command)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/phpunit"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php app/bin/phpunit"
                 }
             }
         }
