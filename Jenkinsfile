@@ -39,6 +39,21 @@ pipeline {
 
                     // Run Symfony migrations (if using Doctrine)
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php app/bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
+
+                    // Compile assets (if needed)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php app/bin/console assets:install public"
+                }
+            }
+        }
+
+        stage('Compile and Display User List') {
+            steps {
+                script {
+                    // Run Symfony command to generate user list (replace with your controller and action)
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php app/bin/console app:user:list"
+
+                    // Optionally, trigger Twig rendering or view the generated content
+                    // Example: bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console twig:render user/list.html.twig"
                 }
             }
         }
