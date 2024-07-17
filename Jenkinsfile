@@ -29,8 +29,7 @@ pipeline {
         stage('Run Symfony Commands') {
             steps {
                 script {
-                    // Install dependencies (assuming using Composer)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php composer install --no-interaction --optimize-autoloader"
+                  
 
                     // Clear Symfony cache
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php app/bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
