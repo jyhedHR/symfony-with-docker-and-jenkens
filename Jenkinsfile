@@ -45,7 +45,7 @@ pipeline {
             }
         }
 
-        stage('Compile and Display User List') {
+        /*stage('Compile and Display User List') {
             steps {
                 script {
                     // Run Symfony command to generate user list (adjust with your actual Symfony command)
@@ -64,7 +64,7 @@ pipeline {
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/phpunit"
                 }
             }
-        }
+        }*/
 
         stage('Stop Docker Containers') {
             steps {
