@@ -9,7 +9,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: '12345',
+                // Checkout code from the Git repository
+                git credentialsId: '12345', 
                     branch: 'test1', 
                     url: 'https://github.com/jyhedHR/abshore.git'
             }
@@ -36,8 +37,8 @@ pipeline {
                     // Clear Symfony cache
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
 
-                    // Warm up Symfony cache (optional)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:warmup --env=${SYMFONY_ENV}"
+                    // Optionally warm up Symfony cache
+                    // bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:warmup --env=${SYMFONY_ENV}"
 
                     // Run Symfony migrations (if using Doctrine)
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
