@@ -63,20 +63,7 @@ services:
       - mysql
     networks:
       - nginx-php74-mysql8-node
-   # Jenkins
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins-container
-    user: root
-    ports:
-      - "8090:8080"
-      - "50000:50000"
-    volumes:
-      - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - nginx-php74-mysql8-node    
-
+   
 volumes:
   mysql-data:
     driver: local
