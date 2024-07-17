@@ -19,10 +19,10 @@ pipeline {
             steps {
                 script {
                     // Start the Docker containers in detached mode using 'docker-compose up'
-                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
                     
                     // Wait for containers to be fully up (adjust the sleep time as needed)
-                    sh 'timeout /t 30 >nul'
+                    bat 'timeout /t 30 >nul'
                 }
             }
         }
@@ -31,16 +31,16 @@ pipeline {
             steps {
                 script {
                     // Install dependencies (assuming using Composer)
-                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php composer install --no-interaction --optimize-autoloader"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php composer install --no-interaction --optimize-autoloader"
 
                     // Clear Symfony cache
-                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
 
                     // Warm up Symfony cache (optional)
-                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:warmup --env=${SYMFONY_ENV}"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console cache:warmup --env=${SYMFONY_ENV}"
 
                     // Run Symfony migrations (if using Doctrine)
-                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
                 }
             }
         }
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     // Run Symfony tests (replace with your test command)
-                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/phpunit"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php php bin/phpunit"
                 }
             }
         }
@@ -57,7 +57,7 @@ pipeline {
         stage('Stop Docker Containers') {
             steps {
                 // Stop and remove the Docker containers
-                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
+                bat "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
             }
         }
     }
