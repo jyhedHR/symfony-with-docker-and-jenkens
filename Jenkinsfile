@@ -21,7 +21,11 @@ pipeline {
                     // Start the Docker containers in detached mode using 'docker-compose up'
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
                     
-                   
+               
+
+                    // List all running containers to capture their names
+                    def containers = bat(script: 'docker ps --format "{{.Names}}"', returnStdout: true).trim().split('\n')
+                    echo "Running containers: ${containers}"
                 }
             }
         }
