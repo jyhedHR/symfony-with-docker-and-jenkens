@@ -27,7 +27,6 @@ pipeline {
                     def containers = bat(script: 'docker ps --format "{{.Names}}"', returnStdout: true).trim().split('\n')
                     echo "Running containers: ${containers}"
 
-                   bat 'ping -n 31 127.0.0.1 > nul'
                 }
             }
         }
@@ -37,9 +36,9 @@ pipeline {
                 script {
                     // Install dependencies (assuming using Composer)
 
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service composer install --no-interaction --optimize-autoloader"
+                  
                     // Clear Symfony cache
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php app/bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
 
                     // Run Symfony migrations (if using Doctrine)
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php app/bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
