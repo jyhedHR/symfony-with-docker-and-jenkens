@@ -41,8 +41,6 @@ pipeline {
                     // Clear Symfony cache
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
 
-                    // Run Symfony migrations (if using Doctrine)
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console doctrine:migrations:migrate --env=${SYMFONY_ENV} --no-interaction"
                 }
             }
         }
