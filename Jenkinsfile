@@ -41,6 +41,7 @@ pipeline {
                     // Clear Symfony cache
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
 
+
                 }
             }
         }
@@ -51,6 +52,11 @@ pipeline {
                     // Ensure the Symfony server or application is running correctly
                     bat "curl -f http://localhost:8088/user" // Adjust the URL and port as per your setup
                 }
+            }
+        }
+            stage('Visit Site and Confirm') {
+            steps {
+                input message: 'Visit the site and confirm it is accessible, then proceed to shut down Docker containers.'
             }
         }
 
