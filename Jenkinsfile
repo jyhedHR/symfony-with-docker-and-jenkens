@@ -27,7 +27,7 @@ pipeline {
                     def containers = bat(script: 'docker ps --format "{{.Names}}"', returnStdout: true).trim().split('\n')
                     echo "Running containers: ${containers}"
 
-                   bat 'ping -n 31 127.0.0.1 > nul'
+                 
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
             }
         }
 
-        stage('Compile and Display User List') {
+       /* stage('Compile and Display User List') {
             steps {
                 script {
                     // Run Symfony command to generate user list (adjust with your actual Symfony command)
@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-        /*stage('Run Tests') {
+        stage('Run Tests') {
             steps {
                 script {
                     // Run Symfony tests (replace with your test command)
