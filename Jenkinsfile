@@ -56,7 +56,7 @@ pipeline {
         }
             stage('Visit Site and Confirm') {
             steps {
-                input message: 'Visit the site and confirm it is accessible, then proceed to shut down Docker containers.'
+                 input message: 'Visit the site and confirm it is accessible, then proceed to shut down Docker containers.', ok: 'Proceed'
             }
         }
 
