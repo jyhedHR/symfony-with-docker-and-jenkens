@@ -50,7 +50,7 @@ pipeline {
                 script {
                     // Run Symfony command to generate user list (adjust with your actual Symfony command)
                    // bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console app:user:list"
-                        bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console twig:render user/list.html.twig"
+                       // bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console twig:render user/list.html.twig"
                     // Optionally, trigger Twig rendering or view the generated content
                     // Example: bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-container php bin/console twig:render user/list.html.twig"
                 }
