@@ -1,8 +1,10 @@
 pipeline {
-    agent any // Runs on any available agent (Jenkins node)
+    agent any
 
     environment {
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+        DOCKER_IMAGE = 'jyhedhr/abshore'
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials-id' // Your Docker Hub credentials ID
         SYMFONY_ENV = 'prod' // Adjust as per your Symfony environment (dev, prod, etc.)
     }
 
@@ -15,19 +17,36 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    bat "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Log in to Docker Hub
+                    bat "echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin"
+
+                    // Push the Docker image to Docker Hub
+                    bat "docker push ${DOCKER_IMAGE}"
+                }
+            }
+        }
+
         stage('Build and Start Docker Containers') {
             steps {
                 script {
                     // Start the Docker containers in detached mode using 'docker-compose up'
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
-                    
-               
 
                     // List all running containers to capture their names
                     def containers = bat(script: 'docker ps --format "{{.Names}}"', returnStdout: true).trim().split('\n')
                     echo "Running containers: ${containers}"
-
-                 
                 }
             }
         }
@@ -36,17 +55,14 @@ pipeline {
             steps {
                 script {
                     // Install dependencies (assuming using Composer)
-
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service composer install --no-interaction --optimize-autoloader"
                     // Clear Symfony cache
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service php bin/console cache:clear --env=${SYMFONY_ENV} --no-warmup"
-
-
                 }
             }
         }
 
-         stage('Run Application') {
+        stage('Run Application') {
             steps {
                 script {
                     // Ensure the Symfony server or application is running correctly
@@ -54,8 +70,6 @@ pipeline {
                 }
             }
         }
-        
-
 
         stage('Stop Docker Containers') {
             steps {

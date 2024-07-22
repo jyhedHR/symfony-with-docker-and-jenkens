@@ -18,5 +18,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN curl -sS https://get.symfony.com/cli/installer | bash \
     && mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
+# Copy existing application directory contents
+COPY . /var/www/project
+
 # Verify installation
 RUN symfony -v
