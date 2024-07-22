@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
         DOCKER_IMAGE = 'jyhedhr/abshore'
-        DOCKER_CREDENTIALS_ID = 'dockhub' // Your Docker Hub credentials ID
+        DOCKER_CREDENTIALS_ID = '2020' // Your Docker Hub credentials ID
         SYMFONY_ENV = 'prod' // Adjust as per your Symfony environment (dev, prod, etc.)
     }
 
