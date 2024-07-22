@@ -62,7 +62,11 @@ services:
       - mysql
     networks:
       - nginx-php74-mysql8-node
-   
+      
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444" 
 volumes:
   mysql-data:
     driver: local
