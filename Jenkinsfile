@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
         DOCKER_IMAGE = 'jyhedhr/abshore'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials-id' // Your Docker Hub credentials ID
+        DOCKER_CREDENTIALS_ID = 'dockhub' // Your Docker Hub credentials ID
         SYMFONY_ENV = 'prod' // Adjust as per your Symfony environment (dev, prod, etc.)
     }
 
@@ -29,13 +29,15 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Log in to Docker Hub
-                    bat "echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin"
+                   withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        // Log in to Docker Hub
+                        bat "echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin"
 
-                    // Push the Docker image to Docker Hub
-                    bat "docker push ${DOCKER_IMAGE}"
-                }
+                        // Push the Docker image to Docker Hub
+                        bat "docker push ${DOCKER_IMAGE}"
+                   }
             }
+        }
         }
 
         stage('Build and Start Docker Containers') {
