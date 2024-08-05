@@ -72,6 +72,14 @@ pipeline {
                 }
             }
         }
+         stage('Run PHPUnit Tests') {
+            steps {
+                script {
+                    // Run PHPUnit tests
+                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service vendor/bin/phpunit"
+                }
+            }
+        }
 
         stage('Stop Docker Containers') {
             steps {
