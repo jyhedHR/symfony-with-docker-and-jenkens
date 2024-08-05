@@ -66,7 +66,7 @@ services:
   selenium:
     image: selenium/standalone-chrome:latest
     ports:
-      - "4444:4444" 
+      - "4445:4444" 
 volumes:
   mysql-data:
     driver: local
