@@ -44,6 +44,7 @@ pipeline {
             steps {
                 script {
                     // Start the Docker containers in detached mode using 'docker-compose up'
+                     bat "docker-compose exec php74-service pwd"
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d"
 
                     // List all running containers to capture their names
