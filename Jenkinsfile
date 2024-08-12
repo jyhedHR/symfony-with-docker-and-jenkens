@@ -58,7 +58,6 @@ pipeline {
             steps {
                 script {
                     // Install bdi and detect the drivers
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service composer require --dev dbrekelmans/bdi --working-dir=/var/www/project"
                     bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service app/vendor/bin/bdi detect drivers"
                 }
             }
