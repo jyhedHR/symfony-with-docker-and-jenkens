@@ -52,15 +52,6 @@ pipeline {
                 }
             }
         }
-        stage('Install Drivers for Panther') {
-            steps {
-                script {
-                    // Install bdi and detect the drivers
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service composer require --dev dbrekelmans/bdi"
-                    bat "docker-compose -f ${DOCKER_COMPOSE_FILE} exec php74-service vendor/bin/bdi detect drivers"
-                }
-            }
-        }
 
         stage('Run Symfony Commands') {
             steps {
